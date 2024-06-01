@@ -70,14 +70,7 @@ def preference_loss(policy_chosen_logps: torch.FloatTensor,
     if reference_free:
         ref_logratios = 0
 
-    if loss_config.mode_loss == 'DPO':
-        logits = pi_logratios - ref_logratios
-        losses = -F.logsigmoid(beta * logits)
-        # return
-        chosen_rewards = beta * (policy_chosen_logps - reference_chosen_logps).detach()
-        rejected_rewards = beta * (policy_rejected_logps - reference_rejected_logps).detach()
-        return (losses, None), chosen_rewards, rejected_rewards, beta
-    elif loss_config.mode_loss == "beta_DPO":
+    if loss_config.mode_loss == "beta_DPO":
         logits = pi_logratios - ref_logratios
         # 1. select data
         A_gap = (policy_chosen_logps - reference_chosen_logps - policy_rejected_logps + reference_rejected_logps)
@@ -100,6 +93,13 @@ def preference_loss(policy_chosen_logps: torch.FloatTensor,
         chosen_rewards = beta * (policy_chosen_logps - reference_chosen_logps).detach()
         rejected_rewards = beta * (policy_rejected_logps - reference_rejected_logps).detach()
         return (losses, global_mask), chosen_rewards, rejected_rewards, beta_used
+    else:
+        logits = pi_logratios - ref_logratios
+        losses = -F.logsigmoid(beta * logits)
+        # return
+        chosen_rewards = beta * (policy_chosen_logps - reference_chosen_logps).detach()
+        rejected_rewards = beta * (policy_rejected_logps - reference_rejected_logps).detach()
+        return (losses, None), chosen_rewards, rejected_rewards, beta
 
 
 def _get_batch_logps(logits: torch.FloatTensor, labels: torch.LongTensor, average_log_prob: bool = False) -> torch.FloatTensor:
