@@ -2,7 +2,7 @@
 
 ## What is this repo?
 
-This repo includes a reference implementation of the Dr. DPO algorithm for training language models from preference data, as described in the paper `$\beta$-DPO: Direct Preference Optimization with Dynamic $\beta$`
+This repo includes a reference implementation of the $\beta$-DPO algorithm for training language models from preference data, as described in the paper `$\beta$-DPO: Direct Preference Optimization with Dynamic $\beta$`
 
 The $\beta$-DPO pipeline has two stages:
 
