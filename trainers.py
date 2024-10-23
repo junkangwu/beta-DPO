@@ -274,6 +274,7 @@ class BasicTrainer(object):
                 reference_chosen_logps, reference_rejected_logps = self.concatenated_forward(self.reference_model, batch)
 
             gap_local = (policy_chosen_logps - reference_chosen_logps - policy_rejected_logps + reference_rejected_logps).detach()
+            gap_local = all_gather_if_needed(gap_local, self.rank, self.world_size)
             loss_local = -F.logsigmoid(loss_config.beta * gap_local)
             self.update_and_sync_tensor_mean(gap_local, loss_local)
             metrics[f'record_{train_test}/gap_mean'] = self.gap_mean.cpu().numpy().tolist()
