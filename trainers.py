@@ -276,10 +276,10 @@ class BasicTrainer(object):
             gap_local = (policy_chosen_logps - reference_chosen_logps - policy_rejected_logps + reference_rejected_logps).detach()
             loss_local = -F.logsigmoid(loss_config.beta * gap_local)
             self.update_and_sync_tensor_mean(gap_local, loss_local)
-            metrics[f'NeurIPS_{train_test}/gap_mean'] = self.gap_mean.cpu().numpy().tolist()
-            metrics[f'NeurIPS_{train_test}/gap_std'] = self.gap_std.cpu().numpy().tolist()
-            metrics[f'NeurIPS_{train_test}/loss_mean'] = self.loss_mean.cpu().numpy().tolist()
-            metrics[f'NeurIPS_{train_test}/loss_std'] = self.loss_std.cpu().numpy().tolist()
+            metrics[f'record_{train_test}/gap_mean'] = self.gap_mean.cpu().numpy().tolist()
+            metrics[f'record_{train_test}/gap_std'] = self.gap_std.cpu().numpy().tolist()
+            metrics[f'record_{train_test}/loss_mean'] = self.loss_mean.cpu().numpy().tolist()
+            metrics[f'record_{train_test}/loss_std'] = self.loss_std.cpu().numpy().tolist()
 
             if loss_config.name == 'dpo':
                 loss_kwargs = {'beta': loss_config.beta, 'reference_free': loss_config.reference_free, 'loss_config':loss_config, 'rank': self.rank, 'world_size': self.world_size}
@@ -295,11 +295,11 @@ class BasicTrainer(object):
                 beta_used = all_gather_if_needed(beta_used, self.rank, self.world_size)
                 beta_used_list_or_float = beta_used.cpu().numpy().tolist()
             if global_mask is not None:
-                metrics[f'NeurIPS_{train_test}/mask_count'] = [global_mask.sum().cpu().numpy().tolist()]
+                metrics[f'record_{train_test}/mask_count'] = [global_mask.sum().cpu().numpy().tolist()]
             if isinstance(beta_used_list_or_float, list):
-                metrics[f'NeurIPS_{train_test}/beta_used'] = beta_used_list_or_float
+                metrics[f'record_{train_test}/beta_used'] = beta_used_list_or_float
             elif isinstance(beta_used_list_or_float, float):
-                metrics[f'NeurIPS_{train_test}/beta_used'] = [beta_used_list_or_float]
+                metrics[f'record_{train_test}/beta_used'] = [beta_used_list_or_float]
             else:
                 pass
 
