@@ -193,7 +193,7 @@ class BasicTrainer(object):
             self.loss_mean = torch.zeros(1, device='cuda')
             self.loss_std = torch.zeros(1, device='cuda')
 
-        self.train_iterator = get_batch_iterator(**data_iterator_kwargs, split='train', n_epochs=config.n_epochs, n_examples=config.n_examples, batch_size=config.batch_size, silent=rank != 0, cache_dir=get_local_dir(config.local_dirs), noise_rate=config.noise_rate)
+        self.train_iterator = get_batch_iterator(**data_iterator_kwargs, split='train', n_epochs=config.n_epochs, n_examples=config.n_examples, batch_size=config.batch_size, silent=rank != 0, cache_dir=get_local_dir(config.local_dirs))
         rank0_print(f'Loaded train data iterator')
         self.eval_iterator = get_batch_iterator(**data_iterator_kwargs, split='test', n_examples=config.n_eval_examples, batch_size=config.eval_batch_size, silent=rank != 0, cache_dir=get_local_dir(config.local_dirs))
         self.eval_batches = list(self.eval_iterator)

@@ -159,7 +159,7 @@ def get_hh(split: str, silent: bool = False, cache_dir: str = None) -> Dict[str,
 
     return data
 
-def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None, noise_rate=0.):
+def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
     if name == 'shp':
         data = get_shp(split, silent=silent, cache_dir=cache_dir)
@@ -288,8 +288,7 @@ def get_batch_iterator(names: List[str],
                        n_examples: Optional[int] = None,
                        seed:int = 0,
                        silent: bool = False,
-                       cache_dir: Optional[str] = None,
-                       noise_rate=0.) -> Iterator[Dict]:
+                       cache_dir: Optional[str] = None) -> Iterator[Dict]:
     """Get an iterator over batches of data. Stops after n_epochs or n_examples, whichever comes first.
 
     Args:
@@ -317,7 +316,7 @@ def get_batch_iterator(names: List[str],
         flat_data = []
         for name in names:
             truncation_mode = 'keep_end' if name == 'hh' else 'keep_start'
-            for prompt, data in get_dataset(name, split, silent=silent, cache_dir=cache_dir, noise_rate=noise_rate).items():
+            for prompt, data in get_dataset(name, split, silent=silent, cache_dir=cache_dir).items():
                 flat_data.append((prompt, data['responses'], data['pairs'], data['sft_target'], truncation_mode))
 
     collate_fn = get_collate_fn(tokenizer)
